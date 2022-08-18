@@ -1,4 +1,3 @@
-import * as bcrypt from 'bcryptjs';
 import { Secret } from 'jsonwebtoken';
 import {
   ILoginRequestBody,
@@ -7,6 +6,7 @@ import {
 import User from '../database/models/User';
 import { IStatusMessage } from '../interfaces/IStatusMessage';
 import JwtService from './JwtService';
+import BcryptService from './BcrptService';
 
 export default class LoginService implements ILoginService {
   private _jwtSecret: Secret = process.env.JWT_SECRET as Secret;
@@ -19,7 +19,7 @@ export default class LoginService implements ILoginService {
 
     if (!user) return { status: 401, message: 'Incorrect email or password' };
 
-    const result = bcrypt.compareSync(password, user.password);
+    const result = await BcryptService.compare(password, user.password);
 
     if (!result) return { status: 401, message: 'Incorrect email or password' };
 
