@@ -9,7 +9,7 @@ export default class ValidateRequestBody {
       return { status: 400, message: 'All fields must be filled' };
     }
     if (!emailValidate.test(email)) {
-      return { status: 401, message: 'Incorrect email or password' };
+      return { status: 401, message: 'Email is not in the correct format' };
     }
     return true;
   }
@@ -21,7 +21,7 @@ export default class ValidateRequestBody {
     if (password.length < 6) {
       return {
         status: 401,
-        message: 'Incorrect email or password',
+        message: 'Password must be at least 6 characters long',
       };
     }
     return true;
