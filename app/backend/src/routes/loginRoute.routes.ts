@@ -8,6 +8,9 @@ const loginController = new LoginController(loginService);
 
 const router = Router();
 
+router.get('/validate', (req: Request, res: Response) =>
+  LoginController.loginValidate(req, res));
+
 router.post(
   '/',
   ValidateRequestBody.loginRequestBody,
