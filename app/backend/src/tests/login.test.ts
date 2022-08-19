@@ -161,8 +161,37 @@ describe('Rota de Login', () => {
 
       it('A rota deve retornar no corpo da resposta "{ message: "Incorrect email or password" }"', async () => {
         const response = await chai.request(app).post('/login').send({
-          email: 'admin@admin.com',
+          email: 'admin@xablau.com',
           password: 'secret_admin',
+        });
+
+        expect(response.body).to.be.haveOwnProperty('message');
+        expect(response.body.message).to.be.a('string');
+        expect(response.body.message).to.be.equal(
+          'Incorrect email or password'
+        );
+      });
+    });
+
+    describe('Com um password inválido', () => {
+      beforeEach(() => {
+        Sinon.stub(User, 'findOne').resolves(validData as User);
+        Sinon.stub(BcryptService, 'compare').resolves(false);
+      });
+
+      it('A rota deve retornar um status http 401', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com',
+          password: 'secret',
+        });
+
+        expect(response.status).to.be.equal(401);
+      });
+
+      it('A rota deve retornar no corpo da resposta "{ message: "Incorrect email or password" }"', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com',
+          password: 'secret',
         });
 
         expect(response.body).to.be.haveOwnProperty('message');
