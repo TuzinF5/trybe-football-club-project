@@ -26,7 +26,7 @@ export default class LoginController {
     }
   }
 
-  static async loginValidate(req: Request, res: Response) {
+  static loginValidate(req: Request, res: Response) {
     try {
       const { authorization } = req.headers;
 
