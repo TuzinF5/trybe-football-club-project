@@ -1,4 +1,5 @@
 import * as chai from 'chai';
+import { IUserPayloadJwt } from '../interfaces/IUser';
 import BcryptService from '../services/BcrptService';
 import JwtService from '../services/JwtService';
 
@@ -13,7 +14,12 @@ describe('Testes unitários', () => {
           'SECRET'
         );
 
+        const result = JwtService.decode(token) as IUserPayloadJwt;
+
         expect(token).to.be.a('string');
+        expect(result.id).to.be.equal(1);
+        expect(result.email).to.be.equal('email@email.com');
+        expect(result.role).to.be.equal('role');
       });
     });
   });
