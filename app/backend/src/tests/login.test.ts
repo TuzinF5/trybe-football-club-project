@@ -7,6 +7,7 @@ import User from '../database/models/User';
 import { app } from '../app';
 import JwtService from '../services/JwtService';
 import BcryptService from '../services/BcrptService';
+import ValidateRequestBody from '../middlewares/ValidateRequestBody';
 
 chai.use(chaiHttp);
 
@@ -199,6 +200,59 @@ describe('Rota de Login', () => {
         expect(response.body.message).to.be.equal(
           'Incorrect email or password'
         );
+      });
+    });
+  });
+
+  describe('Quando acessar a rota "/login" e por algum motivo gerar um erro', () => {
+    describe('Na camada de controller', () => {
+      beforeEach(() => {
+        Sinon.stub(User, 'findOne').rejects();
+      });
+
+      it('A rota deve retornar um status http 500', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com',
+          password: 'secret_admin',
+        });
+
+        expect(response.status).to.be.equal(500);
+      });
+
+      it('A rota deve retornar no corpo da resposta um objeto com o atributo message, contendo a mensagem do erro', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com',
+          password: 'secret_admin',
+        });
+
+        expect(response.body).to.be.haveOwnProperty('message');
+        expect(response.body.message).to.be.a('string');
+      });
+    });
+
+    describe('Na camada de middleware', () => {
+      beforeEach(() => {
+        Sinon.stub(ValidateRequestBody, 'validateEmail').rejects();
+        Sinon.stub(ValidateRequestBody, 'validatePassword').rejects();
+      });
+
+      it('A rota deve retornar um status http 500', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com',
+          password: 'secret_admin',
+        });
+
+        expect(response.status).to.be.equal(500);
+      });
+
+      it('A rota deve retornar no corpo da resposta um objeto com o atributo message, contendo a mensagem do erro', async () => {
+        const response = await chai.request(app).post('/login').send({
+          email: 'admin@admin.com',
+          password: 'secret_admin',
+        });
+
+        expect(response.body).to.be.haveOwnProperty('message');
+        expect(response.body.message).to.be.a('string');
       });
     });
   });
