@@ -23,7 +23,7 @@ const validData = {
 };
 
 const tokenMock =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJpYXQiOjE2NjA4NTc3Njl9.O5BSakwxUBcu2Bn6n1wC2ukxJkq6y7EoHR1CpOAzOs0';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJpYXQiOjE2NjA4NTM1MjB9.LmylBI6m8p9PUtdUOLETY_SlQFJwKDEdalfOHAPJj2E';
 
 describe('Rota de Login', () => {
   afterEach(() => {
@@ -249,6 +249,62 @@ describe('Rota de Login', () => {
         const response = await chai.request(app).post('/login').send({
           email: 'admin@admin.com',
           password: 'secret_admin',
+        });
+
+        expect(response.body).to.be.haveOwnProperty('message');
+        expect(response.body.message).to.be.a('string');
+      });
+    });
+  });
+
+  describe('Quando acessar a rota "/login/validate" com token válido', () => {
+    it('A rota deve retornar um status http 200', async () => {
+      const response = await chai.request(app).get('/login/validate').set({
+        Authorization: tokenMock,
+      });
+
+      expect(response.status).to.be.equal(200);
+    });
+
+    it('A rota deve retornar um objeto contendo a "role" do usuario', async () => {
+      const response = await chai.request(app).get('/login/validate').set({
+        Authorization: tokenMock,
+      });
+
+      expect(response.body).to.be.haveOwnProperty('role');
+      expect(response.body.role).to.be.a('string');
+    });
+  });
+
+  describe('Quando acessar a rota "/login/validate" sem um token', () => {
+    it('A rota deve retornar um status http 401', async () => {
+      const response = await chai.request(app).get('/login/validate').set({});
+
+      expect(response.status).to.be.equal(401);
+    });
+
+    it('A rota deve retornar no corpo de resposta "{ message: "Token does not exist" }"', async () => {
+      const response = await chai.request(app).get('/login/validate').set({});
+
+      expect(response.body).to.be.haveOwnProperty('message');
+      expect(response.body.message).to.be.a('string');
+      expect(response.body.message).to.be.equal('Token does not exist');
+    });
+  });
+
+  describe('Quando acessar a rota "/login/validate" e por algum motivo gerar um erro', () => {
+    describe('Na camada de controller', () => {
+      it('A rota deve retornar um status http 500', async () => {
+        const response = await chai.request(app).get('/login/validate').set({
+          Authorization: 'tokenMock',
+        });
+
+        expect(response.status).to.be.equal(500);
+      });
+
+      it('A rota deve retornar no corpo da resposta um objeto com o atributo message, contendo a mensagem do erro', async () => {
+        const response = await chai.request(app).get('/login/validate').set({
+          Authorization: 'tokenMock',
         });
 
         expect(response.body).to.be.haveOwnProperty('message');
