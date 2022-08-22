@@ -7,6 +7,10 @@ const matcheController = new MatcheController(matcheService);
 
 const router = Router();
 
-router.get('/', (req: Request, res: Response) => matcheController.findAll(req, res));
+router.get('/', (req: Request, res: Response) =>
+  matcheController.findAll(req, res));
+
+router.post('/', (req: Request, res: Response) =>
+  matcheController.create(req, res));
 
 export default router;
