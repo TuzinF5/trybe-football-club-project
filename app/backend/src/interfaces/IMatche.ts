@@ -11,4 +11,5 @@ export interface IMatcheService {
   findAll(): Promise<Matche[]>;
   searchByTerm(inProgress: boolean): Promise<Matche[]>;
   create(data: IMatche): Promise<Matche>;
+  update(id: number): Promise<number>;
 }
