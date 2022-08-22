@@ -5,6 +5,7 @@ import { IMatche } from '../interfaces/IMatche';
 export default class MatcheService {
   private _matches: Promise<Matche[]>;
   private _matcheCreated: Matche;
+  private _result: number;
 
   public async findAll() {
     this._matches = Matche.findAll({
@@ -44,5 +45,11 @@ export default class MatcheService {
     });
 
     return this._matcheCreated as Matche;
+  }
+
+  public async update(id: number) {
+    [this._result] = await Matche.update({ inProgress: true }, { where: { id } });
+
+    return this._result;
   }
 }
