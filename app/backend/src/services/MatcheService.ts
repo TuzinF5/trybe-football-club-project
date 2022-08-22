@@ -14,4 +14,16 @@ export default class MatcheService {
 
     return this._matches;
   }
+
+  public async searchByTerm(inProgress: boolean) {
+    this._matches = Matche.findAll({
+      include: [
+        { model: Team, as: 'teamHome', attributes: { exclude: ['id'] } },
+        { model: Team, as: 'teamAway', attributes: { exclude: ['id'] } },
+      ],
+      where: { inProgress },
+    });
+
+    return this._matches;
+  }
 }
