@@ -28,6 +28,11 @@ export default class MatcheController {
     try {
       const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = req.body;
 
+      if (homeTeam === awayTeam) {
+        return res.status(401)
+          .json({ message: 'It is not possible to create a match with to equal teams' });
+      }
+
       const matcheCreated = await this._matcheService.create({
         homeTeam,
         awayTeam,
