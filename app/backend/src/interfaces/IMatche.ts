@@ -12,4 +12,5 @@ export interface IMatcheService {
   searchByTerm(inProgress: boolean): Promise<Matche[]>;
   create(data: IMatche): Promise<Matche>;
   update(id: number): Promise<number>;
+  findAndCountAll(teams: number[]): Promise<number>;
 }

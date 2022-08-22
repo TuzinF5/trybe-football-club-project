@@ -30,15 +30,17 @@ export default class MatcheController {
 
       if (homeTeam === awayTeam) {
         return res.status(401)
-          .json({ message: 'It is not possible to create a match with to equal teams' });
+          .json({ message: 'It is not possible to create a match with two equal teams' });
       }
 
-      const matcheCreated = await this._matcheService.create({
-        homeTeam,
-        awayTeam,
-        homeTeamGoals,
-        awayTeamGoals,
-      });
+      const result = await this._matcheService.findAndCountAll([homeTeam, awayTeam]);
+
+      if (result !== 2) {
+        return res.status(404).json({ message: 'There is no team with such id!' });
+      }
+
+      const matcheCreated = await
+      this._matcheService.create({ homeTeam, awayTeam, homeTeamGoals, awayTeamGoals });
 
       return res.status(201).json(matcheCreated);
     } catch (err) {
