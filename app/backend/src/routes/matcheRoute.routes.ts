@@ -13,4 +13,7 @@ router.get('/', (req: Request, res: Response) =>
 router.post('/', (req: Request, res: Response) =>
   matcheController.create(req, res));
 
+router.patch('/:id/finish', (req: Request, res: Response) =>
+  matcheController.update(req, res));
+
 export default router;
