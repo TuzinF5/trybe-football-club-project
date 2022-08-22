@@ -1,8 +1,10 @@
 import Team from '../database/models/Team';
 import Matche from '../database/models/Matche';
+import { IMatche } from '../interfaces/IMatche';
 
 export default class MatcheService {
   private _matches: Promise<Matche[]>;
+  private _matcheCreated: Matche;
 
   public async findAll() {
     this._matches = Matche.findAll({
@@ -25,5 +27,22 @@ export default class MatcheService {
     });
 
     return this._matches;
+  }
+
+  public async create({
+    homeTeam,
+    awayTeam,
+    homeTeamGoals,
+    awayTeamGoals,
+  }: IMatche) {
+    this._matcheCreated = await Matche.create({
+      homeTeam,
+      awayTeam,
+      homeTeamGoals,
+      awayTeamGoals,
+      inProgress: true,
+    });
+
+    return this._matcheCreated as Matche;
   }
 }
