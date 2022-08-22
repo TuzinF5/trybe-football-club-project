@@ -4,9 +4,17 @@ import { IMatcheService } from '../interfaces/IMatche';
 export default class MatcheController {
   constructor(private _matcheService: IMatcheService) {}
 
-  async findAll(_req: Request, res: Response) {
+  async findAll(req: Request, res: Response) {
     try {
-      const matches = await this._matcheService.findAll();
+      let matches;
+      const { inProgress } = req.query;
+
+      if (!inProgress) {
+        matches = await this._matcheService.findAll();
+      } else {
+        const inPgs = inProgress === 'true';
+        matches = await this._matcheService.searchByTerm(inPgs);
+      }
 
       return res.status(200).json(matches);
     } catch (err) {
