@@ -42,4 +42,18 @@ export default class MatcheController {
       return res.status(500).json({ message: error.message });
     }
   }
+
+  async update(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      await this._matcheService.update(Number(id));
+
+      return res.status(200).json({ message: 'Finished' });
+    } catch (err) {
+      const error = err as Error;
+      console.log(error.message);
+      return res.status(500).json({ message: error.message });
+    }
+  }
 }
