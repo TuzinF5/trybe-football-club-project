@@ -1,9 +1,11 @@
 import { Model, STRING, INTEGER } from 'sequelize';
+import { IGoals } from '../../interfaces/IHomeTeams';
 import db from '.';
 
 class Team extends Model {
   id!: number;
   teamName!: string;
+  homeTeamMatches?: IGoals[];
 }
 
 Team.init(
