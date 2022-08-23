@@ -2,6 +2,8 @@ import { Op } from 'sequelize';
 import Team from '../database/models/Team';
 import Matche from '../database/models/Matche';
 import { IMatche } from '../interfaces/IMatche';
+import { IHomeTeams } from '../interfaces/IHomeTeams';
+import calculateTeamResults from '../functions/calculateTeamResults';
 
 interface IReturnFindAndCountAllTeam {
   rows: Team[];
@@ -13,6 +15,8 @@ export default class MatcheService {
   private _matcheCreated: Matche;
   private _result: number;
   private _teams: IReturnFindAndCountAllTeam;
+  private _teamRankings: IHomeTeams[];
+  private _homeTeams: Team[];
 
   public async findAll() {
     this._matches = Matche.findAll({
@@ -63,7 +67,11 @@ export default class MatcheService {
     return this._result;
   }
 
-  public async updateResult(id: number, homeTeamGoals: number, awayTeamGoals: number) {
+  public async updateResult(
+    id: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ) {
     [this._result] = await Matche.update(
       { homeTeamGoals, awayTeamGoals },
       { where: { id } },
@@ -82,5 +90,37 @@ export default class MatcheService {
     });
 
     return this._teams.count;
+  }
+
+  private async getHomeTeams() {
+    this._homeTeams = await Team.findAll({
+      attributes: { exclude: ['id'] },
+      include: [
+        {
+          model: Matche,
+          as: 'homeTeamMatches',
+          attributes: { exclude: ['id', 'homeTeam', 'awayTeam', 'inProgress'] },
+          where: { inProgress: false },
+        },
+      ],
+    });
+
+    return this._homeTeams.map((team) => ({
+      teamName: team.teamName,
+      homeTeamMatches: team.homeTeamMatches,
+    }));
+  }
+
+  public async homeTeamRankings() {
+    this._teamRankings = (await this.getHomeTeams()) as IHomeTeams[];
+
+    const result = this._teamRankings.map((team) => calculateTeamResults(team));
+
+    return result
+      .sort((a, b) => b.goalsOwn - a.goalsOwn)
+      .sort((a, b) => b.goalsFavor - a.goalsFavor)
+      .sort((a, b) => b.goalsBalance - a.goalsBalance)
+      .sort((a, b) => b.totalVictories - a.totalVictories)
+      .sort((a, b) => b.totalPoints - a.totalPoints);
   }
 }
