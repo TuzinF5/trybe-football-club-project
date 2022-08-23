@@ -63,4 +63,19 @@ export default class MatcheController {
       return res.status(500).json({ message: error.message });
     }
   }
+
+  async updateResult(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const { homeTeamGoals, awayTeamGoals } = req.body;
+
+      await this._matcheService.updateResult(Number(id), homeTeamGoals, awayTeamGoals);
+
+      return res.status(200).json({ message: 'Updated' });
+    } catch (err) {
+      const error = err as Error;
+      console.log(error.message);
+      return res.status(500).json({ message: error.message });
+    }
+  }
 }
