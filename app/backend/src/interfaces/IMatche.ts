@@ -13,4 +13,5 @@ export interface IMatcheService {
   create(data: IMatche): Promise<Matche>;
   update(id: number): Promise<number>;
   findAndCountAll(teams: number[]): Promise<number>;
+  updateResult(id: number, homeTeamGoals: number, awayTeamGoals: number): Promise<number>
 }
