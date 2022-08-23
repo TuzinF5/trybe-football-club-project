@@ -7,11 +7,29 @@ export interface IMatche {
   awayTeamGoals: number;
 }
 
+interface IHomeTeamRankings {
+  name: string;
+  totalPoints: number;
+  totalGames: number;
+  totalVictories: number;
+  totalDraws: number;
+  totalLosses: number;
+  goalsFavor: number;
+  goalsOwn: number;
+  goalsBalance: number;
+  efficiency: string;
+}
+
 export interface IMatcheService {
   findAll(): Promise<Matche[]>;
   searchByTerm(inProgress: boolean): Promise<Matche[]>;
   create(data: IMatche): Promise<Matche>;
   update(id: number): Promise<number>;
   findAndCountAll(teams: number[]): Promise<number>;
-  updateResult(id: number, homeTeamGoals: number, awayTeamGoals: number): Promise<number>
+  updateResult(
+    id: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number
+  ): Promise<number>;
+  homeTeamRankings(): Promise<IHomeTeamRankings[]>;
 }
