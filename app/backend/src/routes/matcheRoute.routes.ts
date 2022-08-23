@@ -17,4 +17,7 @@ router.post('/', ValidateRequestBody.validateToken, (req: Request, res: Response
 router.patch('/:id/finish', (req: Request, res: Response) =>
   matcheController.update(req, res));
 
+router.patch('/:id', (req: Request, res: Response) =>
+  matcheController.updateResult(req, res));
+
 export default router;
