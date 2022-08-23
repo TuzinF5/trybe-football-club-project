@@ -78,4 +78,16 @@ export default class MatcheController {
       return res.status(500).json({ message: error.message });
     }
   }
+
+  async homeTeamRankings(_req: Request, res: Response) {
+    try {
+      const matches = await this._matcheService.homeTeamRankings();
+
+      return res.status(200).json(matches);
+    } catch (err) {
+      const error = err as Error;
+      console.log(error.message);
+      return res.status(500).json({ message: error.message });
+    }
+  }
 }
