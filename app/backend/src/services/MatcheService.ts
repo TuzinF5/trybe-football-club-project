@@ -63,6 +63,15 @@ export default class MatcheService {
     return this._result;
   }
 
+  public async updateResult(id: number, homeTeamGoals: number, awayTeamGoals: number) {
+    [this._result] = await Matche.update(
+      { homeTeamGoals, awayTeamGoals },
+      { where: { id } },
+    );
+
+    return this._result;
+  }
+
   public async findAndCountAll(teams: number[]) {
     this._teams = await Team.findAndCountAll({
       where: {
