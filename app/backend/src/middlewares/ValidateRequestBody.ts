@@ -1,7 +1,29 @@
 import { NextFunction, Request, Response } from 'express';
+import { Secret } from 'jsonwebtoken';
+import JwtService from '../services/JwtService';
 import { IStatusMessage } from '../interfaces/IStatusMessage';
 
 export default class ValidateRequestBody {
+  private static _jwtSecret: Secret = process.env.JWT_SECRET as Secret;
+
+  static validateToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { authorization } = req.headers;
+
+      if (!authorization) {
+        return res.status(401).json({ message: 'Token does not exist' });
+      }
+
+      JwtService.verify(authorization, ValidateRequestBody._jwtSecret);
+
+      return next();
+    } catch (err) {
+      const error = err as Error;
+      console.log(error.message);
+      return res.status(401).json({ message: 'Token must be a valid token' });
+    }
+  }
+
   static validateEmail(email: string): IStatusMessage | boolean {
     const emailValidate = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gim;
 
