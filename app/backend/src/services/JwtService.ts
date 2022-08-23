@@ -9,4 +9,8 @@ export default class JwtService {
   static decode(token: string) {
     return Jwt.decode(token);
   }
+
+  static verify(token: string, jwtSecret: Jwt.Secret) {
+    return Jwt.verify(token, jwtSecret);
+  }
 }
