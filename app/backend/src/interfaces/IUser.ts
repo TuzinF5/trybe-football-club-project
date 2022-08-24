@@ -1,5 +1,5 @@
 export interface IUserPayloadJwt {
-  id: number;
+  id?: number;
   role: string;
   email: string;
 }
