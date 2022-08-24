@@ -8,6 +8,6 @@ const validData = {
 };
 
 const tokenMock =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJpYXQiOjE2NjA4NTM1MjB9.LmylBI6m8p9PUtdUOLETY_SlQFJwKDEdalfOHAPJj2E';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7InJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIn0sImlhdCI6MTY2MTM2ODY3OH0.7z5t8kw-QuXqIjYW5W7qcvyl6K0THj8Sjl1AVQVy5UE';
 
 export { validData, tokenMock };
