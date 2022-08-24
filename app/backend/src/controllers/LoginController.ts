@@ -1,29 +1,19 @@
 import { Request, Response } from 'express';
-import JwtService from '../services/JwtService';
-import { IStatusMessage } from '../interfaces/IStatusMessage';
-import { ILoginService } from '../interfaces/loginInterfaces';
+import JwtService from '../utils/JwtService';
+import { ILoginService } from '../interfaces/ILoginInterfaces';
 import { IUserPayloadJwt } from '../interfaces/IUser';
 
 export default class LoginController {
-  constructor(public loginService: ILoginService) {}
+  private _token: string;
 
-  async login(req: Request, res: Response) {
-    try {
-      const { email, password } = req.body;
+  constructor(private _loginService: ILoginService) {}
 
-      const token = await this.loginService.login({ email, password });
+  public async login(req: Request, res: Response) {
+    const { email, password } = req.body;
 
-      if (typeof token === 'object') {
-        const { status, message } = token as IStatusMessage;
-        return res.status(status).json({ message });
-      }
+    this._token = await this._loginService.login({ email, password });
 
-      return res.status(200).json({ token });
-    } catch (err) {
-      const error = err as Error;
-      console.log(error.message);
-      return res.status(500).json({ message: error.message });
-    }
+    return res.status(200).json({ token: this._token });
   }
 
   static loginValidate(req: Request, res: Response) {
