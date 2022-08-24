@@ -10,7 +10,7 @@ const loginController = new LoginController(loginService);
 const router = Router();
 
 router.get('/validate', (req: Request, res: Response) =>
-  LoginController.loginValidate(req, res));
+  loginController.getRole(req, res));
 
 router.post(
   '/',
