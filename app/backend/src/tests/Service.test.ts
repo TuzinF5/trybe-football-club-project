@@ -1,25 +1,24 @@
 import * as chai from 'chai';
-import { IUserPayloadJwt } from '../interfaces/IUser';
-import BcryptService from '../services/BcrptService';
-import JwtService from '../services/JwtService';
+import { IPayloadJwt } from '../interfaces/IPayloadJwt';
+import BcryptService from '../utils/BcryptService';
+import JwtService from '../utils/JwtService';
 
 const { expect } = chai;
+
+const payload = { id: 1, role: 'role', email: 'email@email.com' }
 
 describe('Testes unitários', () => {
   describe('Class JwtService', () => {
     describe('Quando usar a função sign', () => {
       it('Ela deve retornar um token', () => {
-        const token = JwtService.sign(
-          { id: 1, role: 'role', email: 'email@email.com' },
-          'SECRET'
-        );
+        const token = JwtService.sign(payload, 'SECRET');
 
-        const result = JwtService.decode(token) as IUserPayloadJwt;
+        const result = JwtService.decode(token) as IPayloadJwt;
 
         expect(token).to.be.a('string');
-        expect(result.id).to.be.equal(1);
-        expect(result.email).to.be.equal('email@email.com');
-        expect(result.role).to.be.equal('role');
+        expect(result.payload.id).to.be.equal(1);
+        expect(result.payload.email).to.be.equal('email@email.com');
+        expect(result.payload.role).to.be.equal('role');
       });
     });
   });
