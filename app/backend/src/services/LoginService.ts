@@ -1,36 +1,38 @@
 import { Secret } from 'jsonwebtoken';
-import {
-  ILoginRequestBody,
-  ILoginService,
-} from '../interfaces/loginInterfaces';
+import HandleTheError from '../utils/HandleTheError';
+import BcryptService from '../utils/BcryptService';
+import JwtService from '../utils/JwtService';
+import { IUserPayloadJwt } from '../interfaces/IUser';
 import User from '../database/models/User';
-import { IStatusMessage } from '../interfaces/IStatusMessage';
-import JwtService from './JwtService';
-import BcryptService from './BcrptService';
+import { ILoginRequestBody, ILoginService } from '../interfaces/ILoginInterfaces';
 
 export default class LoginService implements ILoginService {
   private _jwtSecret: Secret = process.env.JWT_SECRET as Secret;
+  private _user: User | null;
+  private _passwordIsValid: boolean;
+  private _token: string;
+  private _payloadJwt: IUserPayloadJwt;
 
-  async login({
-    email,
-    password,
-  }: ILoginRequestBody): Promise<string | IStatusMessage> {
-    const user: User | null = await User.findOne({ where: { email } });
+  public async login({ email, password }: ILoginRequestBody): Promise<string> {
+    this._user = await User.findOne({ where: { email } });
 
-    if (!user) return { status: 401, message: 'Incorrect email or password' };
+    if (!this._user) {
+      throw new HandleTheError(401, 'Incorrect email or password');
+    }
 
-    const result = await BcryptService.compare(password, user.password);
+    this._passwordIsValid = await BcryptService.compare(password, this._user.password);
 
-    if (!result) return { status: 401, message: 'Incorrect email or password' };
+    if (!this._passwordIsValid) {
+      throw new HandleTheError(401, 'Incorrect email or password');
+    }
 
-    const payload = {
-      id: user.id,
-      role: user.role,
-      email: user.email,
+    this._payloadJwt = {
+      role: this._user.role,
+      email: this._user.email,
     };
 
-    const token = JwtService.sign(payload, this._jwtSecret);
+    this._token = JwtService.sign(this._payloadJwt, this._jwtSecret);
 
-    return token;
+    return this._token;
   }
 }
