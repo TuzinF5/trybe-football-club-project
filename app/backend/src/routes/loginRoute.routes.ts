@@ -14,7 +14,7 @@ router.get('/validate', (req: Request, res: Response) =>
 
 router.post(
   '/',
-  ValidateRequestBody.loginRequestBody,
+  ValidateRequestBody.validateLogin,
   (req: Request, res: Response) => loginController.login(req, res),
 );
 
