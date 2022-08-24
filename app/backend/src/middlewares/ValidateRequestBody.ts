@@ -5,6 +5,7 @@ import { IStatusMessage } from '../interfaces/IStatusMessage';
 
 export default class ValidateRequestBody {
   private static _jwtSecret: Secret = process.env.JWT_SECRET as Secret;
+  private static _emailValidate = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/im;
 
   static validateToken(req: Request, res: Response, next: NextFunction) {
     try {
@@ -25,13 +26,11 @@ export default class ValidateRequestBody {
   }
 
   static validateEmail(email: string): IStatusMessage | boolean {
-    const emailValidate = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/gim;
-
     if (!email) {
       return { status: 400, message: 'All fields must be filled' };
     }
-    if (!emailValidate.test(email)) {
-      return { status: 401, message: 'Email is not in the correct format' };
+    if (!ValidateRequestBody._emailValidate.test(email)) {
+      return { status: 400, message: 'The email is not in the correct format!' };
     }
     return true;
   }
@@ -42,8 +41,8 @@ export default class ValidateRequestBody {
     }
     if (password.length < 6) {
       return {
-        status: 401,
-        message: 'Password must be at least 6 characters long',
+        status: 400,
+        message: 'Password must be longer than 6 characters!',
       };
     }
     return true;
