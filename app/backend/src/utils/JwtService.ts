@@ -3,7 +3,7 @@ import { IUserPayloadJwt } from '../interfaces/IUser';
 
 export default class JwtService {
   static sign(payload: IUserPayloadJwt, jwtSecret: Jwt.Secret) {
-    return Jwt.sign(payload, jwtSecret);
+    return Jwt.sign({ payload }, jwtSecret);
   }
 
   static decode(token: string) {

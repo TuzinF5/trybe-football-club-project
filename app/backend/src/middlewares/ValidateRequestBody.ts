@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Secret } from 'jsonwebtoken';
 import HandleTheError from '../utils/HandleTheError';
-import JwtService from '../services/JwtService';
+import JwtService from '../utils/JwtService';
 
 export default class ValidateRequestBody {
   private static _jwtSecret: Secret = process.env.JWT_SECRET as Secret;
