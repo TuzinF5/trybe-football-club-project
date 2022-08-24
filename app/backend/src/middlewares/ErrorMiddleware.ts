@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import HandleTheError from '../utils/HandleTheError';
+import { IStatusMessage } from '../interfaces/IStatusMessage';
 
 export default class ErrorMiddleware {
   static handleErrors(
-    err: HandleTheError,
+    err: IStatusMessage,
     _req: Request,
     res: Response,
     _next: NextFunction,
