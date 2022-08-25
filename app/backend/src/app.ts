@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import * as express from 'express';
 import loginRouter from './routes/loginRoute.routes';
 import teamRouter from './routes/teamRoute.routes';

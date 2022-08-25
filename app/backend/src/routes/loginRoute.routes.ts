@@ -1,4 +1,3 @@
-import 'express-async-errors';
 import { Request, Response, Router } from 'express';
 import LoginService from '../services/LoginService';
 import LoginController from '../controllers/LoginController';
