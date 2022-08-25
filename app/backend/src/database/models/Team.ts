@@ -6,6 +6,7 @@ class Team extends Model {
   id!: number;
   teamName!: string;
   homeTeamMatches?: IGoals[];
+  awayTeamMatches?: IGoals[];
 }
 
 Team.init(
