@@ -1,3 +1,4 @@
+import { ITeamRankings } from '../interfaces/IMatche';
 import { IAwayTeams, IHomeTeams } from '../interfaces/IHomeTeams';
 import {
   calculateTotalDraws,
@@ -52,4 +53,26 @@ function calculateAwayTeamResults(team: IAwayTeams) {
   };
 }
 
-export { calculateHomeTeamResults, calculateAwayTeamResults };
+function calculateOverallResults(homeTeam: ITeamRankings[], awayTeamRankings: ITeamRankings[]) {
+  return homeTeam.map((team) => {
+    const teamAway = awayTeamRankings.filter((away) => away.name.includes(team.name));
+    const totalPoints = team.totalPoints + teamAway[0].totalPoints;
+    const totalGames = team.totalGames + teamAway[0].totalGames;
+    const efficiency = percentageOfGamesWon(totalPoints, totalGames);
+
+    return {
+      name: team.name,
+      totalPoints,
+      totalGames,
+      totalVictories: team.totalVictories + teamAway[0].totalVictories,
+      totalDraws: team.totalDraws + teamAway[0].totalDraws,
+      totalLosses: team.totalLosses + teamAway[0].totalLosses,
+      goalsFavor: team.goalsFavor + teamAway[0].goalsFavor,
+      goalsOwn: team.goalsOwn + teamAway[0].goalsOwn,
+      goalsBalance: team.goalsBalance + teamAway[0].goalsBalance,
+      efficiency,
+    };
+  });
+}
+
+export { calculateHomeTeamResults, calculateAwayTeamResults, calculateOverallResults };
