@@ -10,4 +10,7 @@ const router = Router();
 router.get('/home', (req: Request, res: Response) =>
   matcheController.homeTeamRankings(req, res));
 
+router.get('/away', (req: Request, res: Response) =>
+  matcheController.awayTeamRankings(req, res));
+
 export default router;
