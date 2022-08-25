@@ -7,6 +7,9 @@ const matcheController = new MatcheController(matcheService);
 
 const router = Router();
 
+router.get('/', (req: Request, res: Response) =>
+  matcheController.teamRanking(req, res));
+
 router.get('/home', (req: Request, res: Response) =>
   matcheController.homeTeamRankings(req, res));
 
