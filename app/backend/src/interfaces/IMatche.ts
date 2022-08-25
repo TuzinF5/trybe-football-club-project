@@ -7,7 +7,7 @@ export interface IMatche {
   awayTeamGoals: number;
 }
 
-interface IHomeTeamRankings {
+interface ITeamRankings {
   name: string;
   totalPoints: number;
   totalGames: number;
@@ -31,5 +31,6 @@ export interface IMatcheService {
     homeTeamGoals: number,
     awayTeamGoals: number
   ): Promise<number>;
-  homeTeamRankings(): Promise<IHomeTeamRankings[]>;
+  homeTeamRankings(): Promise<ITeamRankings[]>;
+  awayTeamRankings(): Promise<ITeamRankings[]>;
 }
