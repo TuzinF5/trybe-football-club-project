@@ -1,4 +1,4 @@
-import { IGoals, IHomeTeams } from '../interfaces/IHomeTeams';
+import { IAwayTeams, IGoals, IHomeTeams } from '../interfaces/IHomeTeams';
 
 function calculateGoalsInFavor(homeTeamGoals: IGoals[]) {
   return homeTeamGoals?.reduce(
@@ -18,7 +18,7 @@ function calculateGoalDifference(homeTeamGoals = 0, awayTeamGoals = 0) {
   return homeTeamGoals - awayTeamGoals;
 }
 
-function resultOfAllGoals(team: IHomeTeams) {
+function resultOfAllGoalsHomeTeam(team: IHomeTeams) {
   const goalsFavor = calculateGoalsInFavor(team.homeTeamMatches);
   const goalsOwn = calculateGoalsConceded(team.homeTeamMatches);
   const goalsBalance = calculateGoalDifference(goalsFavor, goalsOwn);
@@ -26,4 +26,12 @@ function resultOfAllGoals(team: IHomeTeams) {
   return { goalsFavor, goalsOwn, goalsBalance };
 }
 
-export default resultOfAllGoals;
+function resultOfAllGoalsAwayTeam(team: IAwayTeams) {
+  const goalsFavor = calculateGoalsConceded(team.awayTeamMatches);
+  const goalsOwn = calculateGoalsInFavor(team.awayTeamMatches);
+  const goalsBalance = calculateGoalDifference(goalsFavor, goalsOwn);
+
+  return { goalsFavor, goalsOwn, goalsBalance };
+}
+
+export { resultOfAllGoalsHomeTeam, resultOfAllGoalsAwayTeam };
