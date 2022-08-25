@@ -2,8 +2,11 @@ import { Op } from 'sequelize';
 import Team from '../database/models/Team';
 import Matche from '../database/models/Matche';
 import { IMatche } from '../interfaces/IMatche';
-import { IHomeTeams } from '../interfaces/IHomeTeams';
-import calculateTeamResults from '../functions/calculateTeamResults';
+import { IAwayTeams, IHomeTeams } from '../interfaces/IHomeTeams';
+import {
+  calculateAwayTeamResults,
+  calculateHomeTeamResults,
+} from '../functions/calculateTeamResults';
 
 interface IReturnFindAndCountAllTeam {
   rows: Team[];
@@ -15,8 +18,9 @@ export default class MatcheService {
   private _matcheCreated: Matche;
   private _result: number;
   private _teams: IReturnFindAndCountAllTeam;
-  private _teamRankings: IHomeTeams[];
+  private _teamRankings: IHomeTeams[] | IAwayTeams[];
   private _homeTeams: Team[];
+  private _awayTeams: Team[];
 
   public async findAll() {
     this._matches = Matche.findAll({
@@ -114,7 +118,7 @@ export default class MatcheService {
   public async homeTeamRankings() {
     this._teamRankings = (await this.getHomeTeams()) as IHomeTeams[];
 
-    const result = this._teamRankings.map((team) => calculateTeamResults(team));
+    const result = this._teamRankings.map((team) => calculateHomeTeamResults(team));
 
     return result
       .sort((a, b) => b.goalsOwn - a.goalsOwn)
@@ -122,5 +126,39 @@ export default class MatcheService {
       .sort((a, b) => b.goalsBalance - a.goalsBalance)
       .sort((a, b) => b.totalVictories - a.totalVictories)
       .sort((a, b) => b.totalPoints - a.totalPoints);
+  }
+
+  private async getAwayTeams() {
+    this._awayTeams = await Team.findAll({
+      attributes: { exclude: ['id'] },
+      include: [
+        {
+          model: Matche,
+          as: 'awayTeamMatches',
+          attributes: { exclude: ['id', 'homeTeam', 'awayTeam', 'inProgress'] },
+          where: { inProgress: false },
+        },
+      ],
+    });
+
+    return this._awayTeams.map((team) => ({
+      teamName: team.teamName,
+      awayTeamMatches: team.awayTeamMatches,
+    }));
+  }
+
+  public async awayTeamRankings() {
+    this._teamRankings = (await this.getAwayTeams()) as IAwayTeams[];
+
+    const result = this._teamRankings.map((team) => calculateAwayTeamResults(team));
+
+    return result
+      .sort((a, b) => b.goalsOwn - a.goalsOwn)
+      .sort((a, b) => b.goalsFavor - a.goalsFavor)
+      .sort((a, b) => b.goalsBalance - a.goalsBalance)
+      .sort((a, b) => b.totalVictories - a.totalVictories)
+      .sort((a, b) => b.totalPoints - a.totalPoints);
+
+    return result;
   }
 }
