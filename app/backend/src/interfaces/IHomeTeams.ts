@@ -7,3 +7,8 @@ export interface IHomeTeams {
   teamName: string;
   homeTeamMatches: IGoals[];
 }
+
+export interface IAwayTeams {
+  teamName: string;
+  awayTeamMatches: IGoals[];
+}
