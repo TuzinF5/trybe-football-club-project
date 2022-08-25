@@ -66,4 +66,10 @@ export default class MatcheController {
 
     return res.status(200).json(matches);
   }
+
+  async teamRanking(_req: Request, res: Response) {
+    const matches = await this._matcheService.teamRanking();
+
+    return res.status(200).json(matches);
+  }
 }
