@@ -6,6 +6,7 @@ import { IAwayTeams, IHomeTeams } from '../interfaces/IHomeTeams';
 import {
   calculateAwayTeamResults,
   calculateHomeTeamResults,
+  calculateOverallResults,
 } from '../functions/calculateTeamResults';
 
 interface IReturnFindAndCountAllTeam {
@@ -158,7 +159,19 @@ export default class MatcheService {
       .sort((a, b) => b.goalsBalance - a.goalsBalance)
       .sort((a, b) => b.totalVictories - a.totalVictories)
       .sort((a, b) => b.totalPoints - a.totalPoints);
+  }
 
-    return result;
+  public async teamRanking() {
+    const homeTeamRankings = await this.homeTeamRankings();
+    const awayTeamRankings = await this.awayTeamRankings();
+
+    const result = calculateOverallResults(homeTeamRankings, awayTeamRankings);
+
+    return result
+      .sort((a, b) => b.goalsOwn - a.goalsOwn)
+      .sort((a, b) => b.goalsFavor - a.goalsFavor)
+      .sort((a, b) => b.goalsBalance - a.goalsBalance)
+      .sort((a, b) => b.totalVictories - a.totalVictories)
+      .sort((a, b) => b.totalPoints - a.totalPoints);
   }
 }
